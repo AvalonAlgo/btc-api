@@ -2,22 +2,31 @@
 
 ## Overview
 
-A brief description of what your project does and who it's for. Explain the main features and the value it provides to its users or developers.
+A simplified fake bitcoin transaction api made with Laravel. This is not real, I also wish I had a lot of bitcoin, alas, some things remain distant dreams forever
 
 ## System Requirements
 
-- PHP >= 8.1
-- Composer (latest version)
-- sqlite
-- Laravel >= 10.3
+- PHP >= 8.1 
+- Composer (https://getcomposer.org/download/)
 - Node.js and NPM
 
 ## Installation Instructions
 
 ### Clone the Repository
-
 ```bash
 git clone https://github.com/AvalonAlgo/btc-api
+```
+
+### Enter the repository and install the required packages with composer and npm
+```bash
 cd btc-api
 composer install
+npm install
 php artisan serve
+```
+
+### Run the application and navigate to the main page
+```bash
+php artisan serve
+http://127.0.0.1:8000/
+```
