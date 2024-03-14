@@ -133,8 +133,8 @@
 
                 container.innerHTML = `            <form id="transactionForm" class="border p-2 rounded">
                 <div class="mb-4">
-                    <label for="btcAmount" class="text-gray-700 text-sm font-bold mb-2">BTC Amount</label>
-                    <input type="number" id="btcAmount" name="btcAmount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
+                    <label for="btcAmount" class="text-gray-700 text-sm font-bold mb-2">EUR Amount</label>
+                    <input type="number" id="eurAmount" name="btcAmount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                 </div>
                 <div class="mb-4 flex flex-row space-x-2">
                     <label for="spentBoolean" class="block text-gray-700 text-sm font-bold">Spent</label>
@@ -147,7 +147,7 @@
             async function sendTransaction(event) {
                 event.preventDefault();
 
-                let btcAmount = document.getElementById('btcAmount').value;
+                let eurAmount = document.getElementById('eurAmount').value;
                 let spentBoolean = document.getElementById('spentBoolean').checked;
 
                 fetch('/api/transactions', {
@@ -156,7 +156,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        btcAmount: btcAmount,
+                        eurAmount: eurAmount,
                         spentBoolean: spentBoolean
                     })
                 }).then(response => response.json())

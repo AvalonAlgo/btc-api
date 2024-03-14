@@ -20,9 +20,8 @@ git clone https://github.com/AvalonAlgo/btc-api
 ### Enter the repository and install the required packages with composer and npm
 ```bash
 cd btc-api
-composer install
 npm install
-php artisan serve
+composer install
 ```
 
 ### Run the application and navigate to the main page

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class TransactionController extends Controller
 {
@@ -24,29 +25,32 @@ class TransactionController extends Controller
     {
         $totalBtc = Transaction::where('spent', false)->sum('amount_btc') - Transaction::where('spent', true)->sum('amount_btc');
 
-        $btcAmount = $request->btcAmount;
+        $eurAmount = $request->eurAmount;
         $spentBoolean = $request->spentBoolean;
 
-        if ($btcAmount < 0.00001) {
+        $btcToEur = Http::get('http://api-cryptopia.adca.sh/v1/prices/ticker?symbol=BTC%2FEUR')->json()['data'][0]['value'];
+        $requestEurtoBtc = $eurAmount / $btcToEur;
+
+        if ($requestEurtoBtc < 0.00001) {
             return response()->json(['res' => 'Failed! BTC amount too low!']);
         }
 
         if (!$spentBoolean) {
             $transaction = Transaction::create([
-                'amount_btc' => $btcAmount,
+                'amount_btc' => $requestEurtoBtc,
                 'spent' => $spentBoolean
             ]);
             return response()->json(['res' => 'Success! BTC added!', 'transaction' => $transaction]);
-        } else if ($totalBtc - $btcAmount < 0) {
+        } else if ($totalBtc - $requestEurtoBtc < 0) {
             return response()->json(['res' => 'Not enough BTC balance!']);
-        } else if ($totalBtc - $btcAmount > 0 && $btcAmount >= 0.00001) {
+        } else if ($totalBtc - $requestEurtoBtc > 0 && $requestEurtoBtc >= 0.00001) {
             $transaction = Transaction::create([
-                'amount_btc' => $btcAmount,
+                'amount_btc' => $requestEurtoBtc,
                 'spent' => $spentBoolean
             ]);
             return response()->json(['res' => 'Success! BTC spent!', 'transaction' => $transaction]);
         }
-        return $request;
+        return response()->json(['res' => $requestEurtoBtc]);
     }
 
     /**
