@@ -24,8 +24,9 @@ npm install
 composer install
 ```
 
-### Run the application and navigate to the main page
+### Create the database, run the application and navigate to the main page
 ```bash
+php artisan migrate
 php artisan serve
 http://127.0.0.1:8000/
 ```
