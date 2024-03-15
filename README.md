@@ -17,7 +17,7 @@ git clone https://github.com/AvalonAlgo/btc-api
 ```
 
 ### Enter the repository and install the required packages with composer and npm
-#### You could encounter some errors with composer unzipping. Go to C:\xampp\php\php.ini and uncomment ';extension=zip' to 'extension=zip'
+#### You may encounter some issues with composer zipping. Go to C:\xampp\php\php.ini and uncomment ';extension=zip' to 'extension=zip'
 ```bash
 cd btc-api
 composer install
