@@ -31,3 +31,14 @@ php artisan serve
 http://127.0.0.1:8000/
 ```
 
+### Interact with the API either through a CLI (fiddle with the data in the POST request), or the web page
+```bash
+curl "http://127.0.0.1:8000/api/transactions"
+curl "http://127.0.0.1:8000/api/balance"
+curl -X POST "http://127.0.0.1:8000/api/transactions" \
+    -H "Content-Type: application/json" \
+    -d '{"eurAmount": "300000", "spentBoolean": false}'
+```
+![img.png](img.png)
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
