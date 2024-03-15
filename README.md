@@ -2,7 +2,7 @@
 
 ## Overview
 
-A simplified fake bitcoin transaction api made with Laravel. This is not real, I also wish I had a lot of bitcoin, alas, some things remain distant dreams forever
+A simplified fake bitcoin transaction api made with Laravel. This is not real, I also wish I had a lot of bitcoin, alas, some things remain distant dreams forever.
 
 ## System Requirements
 
@@ -30,3 +30,4 @@ php artisan db:seed
 php artisan serve
 http://127.0.0.1:8000/
 ```
+
