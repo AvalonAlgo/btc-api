@@ -8,6 +8,7 @@
 
         <script>
             let currentTab = '';
+            let prevInterval = null;
 
             function fetchTransactions() {
                 currentTab = 'transactions';
@@ -69,6 +70,7 @@
             }
             function fetchBalance() {
                 currentTab = 'balance';
+                clearInterval(prevInterval);
 
                 function sendReq() {
                     fetch('/api/balance')
@@ -83,7 +85,7 @@
 
                 sendReq();
 
-                setInterval(sendReq, 3000);
+                prevInterval = setInterval(sendReq, 3000);
             }
             function newTransaction() {
                 currentTab = 'newTransaction';
@@ -203,7 +205,6 @@
 
                 container.appendChild(table);
             }
-
         </script>
     </head>
     <body class="antialiased flex flex-col h-screen">

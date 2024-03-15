@@ -29,23 +29,39 @@ class TransactionController extends Controller
         $spentBoolean = $request->spentBoolean;
 
         $btcToEur = Http::get('http://api-cryptopia.adca.sh/v1/prices/ticker?symbol=BTC%2FEUR')->json()['data'][0]['value'];
-        $requestEurtoBtc = $eurAmount / $btcToEur;
+        $requestEurtoBtc = floor($eurAmount / $btcToEur * 100000) / 100000;
 
         if ($requestEurtoBtc < 0.00001) {
             return response()->json(['res' => 'Failed! BTC amount too low!']);
-        } else if ($totalBtc - $requestEurtoBtc < 0) {
-            return response()->json(['res' => 'Not enough BTC balance!']);
         }
 
-        $transaction = Transaction::create([
-            'amount_btc' => $requestEurtoBtc,
-            'spent' => $spentBoolean
-        ]);
+        if ($spentBoolean && ($totalBtc - $requestEurtoBtc <= 0)) {
+            return response()->json(['res' => 'Not enough BTC balance!']);
+        } else if ($spentBoolean && ($totalBtc - $requestEurtoBtc > 0)) {
+            $transactions = Transaction::where('spent', false)->get();
+            $sum = 0;
+            foreach($transactions as $transaction) {
+                $transaction->spent = true;
+                $transaction->save();
+                $sum += $transaction->amount_btc;
+                if ($sum >= $requestEurtoBtc) {
+                    break;
+                }
+            }
 
-        if (!$spentBoolean) {
-            return response()->json(['res' => 'Success! BTC added!', 'transaction' => $transaction]);
-        } else if ($totalBtc - $requestEurtoBtc > 0) {
-            return response()->json(['res' => 'Success! BTC spent!', 'transaction' => $transaction]);
+            $transaction = Transaction::create([
+                'amount_btc' => $sum - $requestEurtoBtc,
+                'spent' => false
+            ]);
+
+            return response()->json(['res' => 'Success! BTC spent!', 'New transaction' => $transaction]);
+        } else if (!$spentBoolean) {
+            $transaction = Transaction::create([
+                'amount_btc' => $requestEurtoBtc,
+                'spent' => false
+            ]);
+
+            return response()->json(['res' => 'Success! BTC added!', 'transaction' => $requestEurtoBtc]);
         }
 
         return response()->json(['res' => $requestEurtoBtc]);
