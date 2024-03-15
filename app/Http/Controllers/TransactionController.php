@@ -23,7 +23,7 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $totalBtc = Transaction::where('spent', false)->sum('amount_btc') - Transaction::where('spent', true)->sum('amount_btc');
+        $totalBtc = Transaction::where('spent', false)->sum('amount_btc');
 
         $eurAmount = $request->eurAmount;
         $spentBoolean = $request->spentBoolean;

@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::apiResource('transactions', TransactionController::class);
 
 Route::get('balance', function (): JsonResponse {
-    $totalBtc = Transaction::where('spent', false)->sum('amount_btc') - Transaction::where('spent', true)->sum('amount_btc');
+    $totalBtc = Transaction::where('spent', false)->sum('amount_btc');
 
     $btcEurResponse = Http::get('http://api-cryptopia.adca.sh/v1/prices/ticker?symbol=BTC%2FEUR')->json();
 
