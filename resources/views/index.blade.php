@@ -7,7 +7,11 @@
         <title>BTC API</title>
 
         <script>
+            let currentTab = '';
+
             function fetchTransactions() {
+                currentTab = 'transactions';
+
                 fetch('/api/transactions')
                     .then(response => response.json())
                     .then(data => {
@@ -64,62 +68,26 @@
                     });
             }
             function fetchBalance() {
-                fetch('/api/balance')
-                    .then(response => response.json())
-                    .then(data => {
-                        const container = document.getElementById('balanceContainer');
-                        document.getElementById('transactionsContainer').innerHTML = '';
-                        document.getElementById('balanceContainer').innerHTML = '';
-                        document.getElementById('newTransactionContainer').innerHTML = '';
+                currentTab = 'balance';
 
-                        document.getElementById('balanceButton').classList.add('bg-blue-200');
-                        document.getElementById('balanceButton').classList.remove('bg-white');
-                        document.getElementById('transactionButton').classList.add('bg-white');
-                        document.getElementById('transactionButton').classList.remove('bg-blue-200');
-                        document.getElementById('newTransactionButton').classList.add('bg-white');
-                        document.getElementById('newTransactionButton').classList.remove('bg-blue-200');
+                function sendReq() {
+                    fetch('/api/balance')
+                        .then(response => response.json())
+                        .then(data => {
+                            updateBalance(data);
+                        })
+                        .catch(error => {
+                            document.getElementById('balanceContainer').textContent = 'Failed to fetch balance.';
+                        });
+                }
 
-                        const table = document.createElement('table');
-                        table.classList.add('table-auto', 'w-full', 'text-left', 'shadow-md', 'mt-2');
+                sendReq();
 
-                        const thead = document.createElement('thead');
-                        thead.classList.add('bg-gray-200');
-                        thead.innerHTML = `
-                            <tr>
-                                <th class="px-4 py-2">Description</th>
-                                <th class="px-4 py-2">Value</th>
-                            </tr>
-                        `;
-                        table.appendChild(thead);
-
-                        const tbody = document.createElement('tbody');
-                        tbody.innerHTML = `
-                            <tr class="bg-white">
-                                <td class="border px-4 py-2">Total BTC</td>
-                                <td class="border px-4 py-2">${data.total_btc}</td>
-                            </tr>
-                            <tr class="bg-gray-100">
-                                <td class="border px-4 py-2">EUR/BTC</td>
-                                <td class="border px-4 py-2">${data['EUR/BTC'].toLocaleString('en-US', {style: 'currency', currency: 'EUR'})}</td>
-                            </tr>
-                            <tr class="bg-white">
-                                <td class="border px-4 py-2">EUR Value</td>
-                                <td class="border px-4 py-2">${data['EUR value'].toLocaleString('en-US', {style: 'currency', currency: 'EUR'})}</td>
-                            </tr>
-                            <tr class="bg-gray-100">
-                                <td class="border px-4 py-2">Timestamp</td>
-                                <td class="border px-4 py-2">${data.timestamp}</td>
-                            </tr>
-                        `;
-                        table.appendChild(tbody);
-
-                        container.appendChild(table);
-                    })
-                    .catch(error => {
-                        document.getElementById('balanceContainer').textContent = 'Failed to fetch balance.';
-                    });
+                setInterval(sendReq, 3000);
             }
             function newTransaction() {
+                currentTab = 'newTransaction';
+
                 const container = document.getElementById('newTransactionContainer');
                 document.getElementById('transactionsContainer').innerHTML = '';
                 document.getElementById('balanceContainer').innerHTML = '';
@@ -181,6 +149,61 @@
                         container.appendChild(errorMessage);
                     });
             }
+
+            function updateBalance(data) {
+                if (currentTab !== 'balance') {
+                    return;
+                }
+
+                const container = document.getElementById('balanceContainer');
+                document.getElementById('transactionsContainer').innerHTML = '';
+                document.getElementById('balanceContainer').innerHTML = '';
+                document.getElementById('newTransactionContainer').innerHTML = '';
+
+                document.getElementById('balanceButton').classList.add('bg-blue-200');
+                document.getElementById('balanceButton').classList.remove('bg-white');
+                document.getElementById('transactionButton').classList.add('bg-white');
+                document.getElementById('transactionButton').classList.remove('bg-blue-200');
+                document.getElementById('newTransactionButton').classList.add('bg-white');
+                document.getElementById('newTransactionButton').classList.remove('bg-blue-200');
+
+                const table = document.createElement('table');
+                table.classList.add('table-auto', 'w-full', 'text-left', 'shadow-md', 'mt-2');
+
+                const thead = document.createElement('thead');
+                thead.classList.add('bg-gray-200');
+                thead.innerHTML = `
+                            <tr>
+                                <th class="px-4 py-2">Description</th>
+                                <th class="px-4 py-2">Value</th>
+                            </tr>
+                        `;
+                table.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+                tbody.innerHTML = `
+                            <tr class="bg-white">
+                                <td class="border px-4 py-2">Total BTC</td>
+                                <td class="border px-4 py-2">${data.total_btc}</td>
+                            </tr>
+                            <tr class="bg-gray-100">
+                                <td class="border px-4 py-2">EUR/BTC</td>
+                                <td class="border px-4 py-2">${data['EUR/BTC'].toLocaleString('en-US', {style: 'currency', currency: 'EUR'})}</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="border px-4 py-2">EUR Value</td>
+                                <td class="border px-4 py-2">${data['EUR value'].toLocaleString('en-US', {style: 'currency', currency: 'EUR'})}</td>
+                            </tr>
+                            <tr class="bg-gray-100">
+                                <td class="border px-4 py-2">Timestamp</td>
+                                <td class="border px-4 py-2">${data.timestamp}</td>
+                            </tr>
+                        `;
+                table.appendChild(tbody);
+
+                container.appendChild(table);
+            }
+
         </script>
     </head>
     <body class="antialiased flex flex-col h-screen">

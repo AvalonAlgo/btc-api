@@ -25,7 +25,7 @@ Route::get('balance', function (): JsonResponse {
     $btcEurResponse = Http::get('http://api-cryptopia.adca.sh/v1/prices/ticker?symbol=BTC%2FEUR')->json();
 
     $response = [
-        'total_btc' => $totalBtc,
+        'total_btc' => floor($totalBtc * 100000) / 100000,
         'EUR/BTC' => (double)$btcEurResponse['data'][0]['value'],
         'EUR value' => $btcEurResponse['data'][0]['value'] * $totalBtc,
         'timestamp' => now(),

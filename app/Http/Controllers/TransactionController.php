@@ -33,23 +33,21 @@ class TransactionController extends Controller
 
         if ($requestEurtoBtc < 0.00001) {
             return response()->json(['res' => 'Failed! BTC amount too low!']);
-        }
-
-        if (!$spentBoolean) {
-            $transaction = Transaction::create([
-                'amount_btc' => $requestEurtoBtc,
-                'spent' => $spentBoolean
-            ]);
-            return response()->json(['res' => 'Success! BTC added!', 'transaction' => $transaction]);
         } else if ($totalBtc - $requestEurtoBtc < 0) {
             return response()->json(['res' => 'Not enough BTC balance!']);
-        } else if ($totalBtc - $requestEurtoBtc > 0 && $requestEurtoBtc >= 0.00001) {
-            $transaction = Transaction::create([
-                'amount_btc' => $requestEurtoBtc,
-                'spent' => $spentBoolean
-            ]);
+        }
+
+        $transaction = Transaction::create([
+            'amount_btc' => $requestEurtoBtc,
+            'spent' => $spentBoolean
+        ]);
+
+        if (!$spentBoolean) {
+            return response()->json(['res' => 'Success! BTC added!', 'transaction' => $transaction]);
+        } else if ($totalBtc - $requestEurtoBtc > 0) {
             return response()->json(['res' => 'Success! BTC spent!', 'transaction' => $transaction]);
         }
+
         return response()->json(['res' => $requestEurtoBtc]);
     }
 
