@@ -15,6 +15,9 @@ class TransactionController extends Controller
     public function index(): JsonResponse
     {
         $transactions = Transaction::all();
+        foreach ($transactions as $transaction) {
+            $transaction->amount_btc = number_format($transaction->amount_btc, 5, ',');
+        }
         return response()->json($transactions);
     }
 
@@ -29,7 +32,7 @@ class TransactionController extends Controller
         $spentBoolean = $request->spentBoolean;
 
         $btcToEur = Http::get('http://api-cryptopia.adca.sh/v1/prices/ticker?symbol=BTC%2FEUR')->json()['data'][0]['value'];
-        $requestEurtoBtc = floor($eurAmount / $btcToEur * 100000) / 100000;
+        $requestEurtoBtc = $eurAmount / $btcToEur;
 
         if ($requestEurtoBtc < 0.00001) {
             return response()->json(['res' => 'Failed! BTC amount too low!']);
@@ -50,14 +53,14 @@ class TransactionController extends Controller
             }
 
             $transaction = Transaction::create([
-                'amount_btc' => $sum - $requestEurtoBtc,
+                'amount_btc' => floor(($sum - $requestEurtoBtc) * 100000) / 100000,
                 'spent' => false
             ]);
 
             return response()->json(['res' => 'Success! BTC spent!', 'New transaction' => $transaction]);
         } else if (!$spentBoolean) {
             $transaction = Transaction::create([
-                'amount_btc' => $requestEurtoBtc,
+                'amount_btc' => floor(($requestEurtoBtc) * 100000) / 100000,
                 'spent' => false
             ]);
 
@@ -65,21 +68,5 @@ class TransactionController extends Controller
         }
 
         return response()->json(['res' => $requestEurtoBtc]);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
