@@ -6,7 +6,7 @@ A simplified fake bitcoin transaction api made with Laravel. This is not real, I
 
 ## System Requirements
 
-- XAMPP w/ at least PHP v8.1 (you could install everything individually, but this is much simpler)
+- XAMPP w/ at least PHP v8.1 (https://www.apachefriends.org/download.html), this way it's simpler
 - Composer (https://getcomposer.org/download/)
 
 ## Installation Instructions
@@ -17,10 +17,9 @@ git clone https://github.com/AvalonAlgo/btc-api
 ```
 
 ### Enter the repository and install the required packages with composer and npm
-#### You could encounter some errors with composer unzipping. Go to your php.ini in your php directory and uncomment ';extension=zip' to 'extension=zip'
+#### You could encounter some errors with composer unzipping. Go to C:\xampp\php\php.ini and uncomment ';extension=zip' to 'extension=zip'
 ```bash
 cd btc-api
-npm install
 composer install
 ```
 
