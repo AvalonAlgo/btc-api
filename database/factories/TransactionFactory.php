@@ -22,7 +22,7 @@ class TransactionFactory extends Factory
     {
         return [
             'transaction_id' => Str::uuid(),
-            'amount_btc' => $this->faker->randomFloat(5, 0, 5), // Generate a random float with 5 decimal places
+            'amount_btc' => $this->faker->randomFloat(5, 0, 5),
             'spent' => false,
             'created_at' => $this->faker->dateTimeThisMonth
         ];
